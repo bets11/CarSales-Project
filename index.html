@@ -29,9 +29,10 @@
 
         const carSwitcher = new CarSwitcher('carImage');
 
-        document.getElementById('nextCarButton')?.addEventListener('click', () => carSwitcher.nextCar());
-        document.getElementById('prevCarButton')?.addEventListener('click', () => carSwitcher.previousCar());
+        document.getElementById('right-bottom')?.addEventListener('click', () => carSwitcher.nextCar());
+        document.getElementById('left-bottom')?.addEventListener('click', () => carSwitcher.previousCar());
     </script>
+
     <video id="videoElement" autoplay playsinline></video>
     <button id="captureButton">Capture Image</button>
     <button id="grayscaleBtn">Grayscale</button>
