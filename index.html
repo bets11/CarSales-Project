@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Stream</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <video id="videoElement" autoplay playsinline></video>
+    <button id="captureButton">Capture Image</button>
+    <button id="grayscaleBtn">Grayscale</button>
+    <canvas id="canvasElement" style="display:none;"></canvas>
+    <img id="capturedImage" alt="Captured Image" />
+    <img id="filteredImage" alt="Filtered Image" />
+    <script src="dist/index.js"></script>
+</body>
+</html>
