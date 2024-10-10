@@ -3,10 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Stream</title>
+    <title>Car Sales</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+    <div class="container"></div>
+        <!-- Titel -->
+        <div class="title">MERCEDES BENZ CLE COUPÉ</div>
+        
+        <!-- Buttons -->
+        <div id="minus" class="button">-</div>
+        <div id="plus" class="button">+</div>
+        <div id="left-top" class="button" id="prevCarButton">&lt;</div>
+        <div id="left-bottom" class="button">&lt;&lt;</div>
+        <div id="right-top" class="button" id="nextCarButton">&gt;</div>
+        <div id="right-bottom" class="button">&gt;&gt;</div>
+
+        <!-- Platzhalter für das Auto-Bild -->
+        <img id="carImage" src="src/cle.png" alt="Auto-Bild" class="car-image">
+    </div>
+
+    <script type="module">
+        import { CarSwitcher } from './src/carSwitcher.js'; // Achte darauf, die Endung .js zu verwenden, wenn du es kompilierst.
+
+        const carSwitcher = new CarSwitcher('carImage');
+
+        document.getElementById('nextCarButton')?.addEventListener('click', () => carSwitcher.nextCar());
+        document.getElementById('prevCarButton')?.addEventListener('click', () => carSwitcher.previousCar());
+    </script>
     <video id="videoElement" autoplay playsinline></video>
     <button id="captureButton">Capture Image</button>
     <button id="grayscaleBtn">Grayscale</button>
