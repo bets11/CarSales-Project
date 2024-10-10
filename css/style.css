@@ -1,0 +1,3 @@
+#videoElement {
+     transform: scaleX(-1); /* Spiegeln Sie das Videoelement */
+ }
