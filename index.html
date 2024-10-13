@@ -9,10 +9,9 @@
 <body>
 
     <div class="container"></div>
-        <!-- Titel -->
+    
         <div class="title">MERCEDES BENZ CLE COUPÉ</div>
         
-        <!-- Buttons -->
         <div id="minus" class="button">-</div>
         <div id="plus" class="button">+</div>
         <div id="left-top" class="button" id="prevCarButton">&lt;</div>
@@ -20,12 +19,12 @@
         <div id="right-top" class="button" id="nextCarButton">&gt;</div>
         <div id="right-bottom" class="button">&gt;&gt;</div>
 
-        <!-- Platzhalter für das Auto-Bild -->
-        <img id="carImage" src="src/cle.png" alt="Auto-Bild" class="car-image">
+        <!-- Car-Pic-->
+        <img id="carImage" src="src/pictures/m4.png" alt="Auto-Bild" class="car-image">
     </div>
 
     <script type="module">
-        import { CarSwitcher } from './src/carSwitcher.js'; // Achte darauf, die Endung .js zu verwenden, wenn du es kompilierst.
+        import { CarSwitcher } from './src/carSwitcher.js'; 
 
         const carSwitcher = new CarSwitcher('carImage');
 

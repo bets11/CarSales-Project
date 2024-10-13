@@ -65,25 +65,3 @@ window.addEventListener('DOMContentLoaded', () => {
     getVideoStream().catch(err => console.error(err));
 });
 captureButton.addEventListener('click', captureImage);
-
-class CarSwitcher {
-    constructor(imageElementId) {
-        this.imageElement = document.getElementById(imageElementId);
-        this.currentIndex = 0;
-        this.carImages = ['src/cle.png', 'src/competition.png', 'src/m4.png'];
-    }
-
-    nextCar() {
-        this.currentIndex = (this.currentIndex + 1) % this.carImages.length;
-        this.updateCarImage();
-    }
-
-    previousCar() {
-        this.currentIndex = (this.currentIndex - 1 + this.carImages.length) % this.carImages.length;
-        this.updateCarImage();
-    }
-
-    updateCarImage() {
-        this.imageElement.src = this.carImages[this.currentIndex];
-    }
-}
