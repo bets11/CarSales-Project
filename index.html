@@ -8,36 +8,28 @@
 </head>
 <body>
 
-    <div class="container"></div>
-    
+    <div class="container">
         <div class="title">MERCEDES BENZ CLE COUPÉ</div>
         
         <div id="minus" class="button">-</div>
         <div id="plus" class="button">+</div>
-        <div id="left-top" class="button" id="prevCarButton">&lt;</div>
+        <div id="prevCarButton" class="button">&lt;</div>
         <div id="left-bottom" class="button">&lt;&lt;</div>
-        <div id="right-top" class="button" id="nextCarButton">&gt;</div>
+        <div id="nextCarButton" class="button">&gt;</div>
         <div id="right-bottom" class="button">&gt;&gt;</div>
-
-        <!-- Car-Pic-->
-        <img id="carImage" src="src/pictures/m4.png" alt="Auto-Bild" class="car-image">
+    
+        <img id="carImage" src="src/pictures/cle.png" alt="Auto-Bild" class="car-image">
     </div>
 
-    <script type="module">
-        import { CarSwitcher } from './src/carSwitcher.js'; 
+    <div class="web">
+        
+        <button id="toggleButton" class="toggleButton">Toggle Video</button>
+        <div id="updatenote" class="updatenote mt10">Loading Model...</div>
+    </div>
+    <video class="videobox canvasbox" id="video" width="640" height="480" autoplay playsinline></video>
+    <canvas id="canvas" class="border canvasbox" width="640" height="480"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/handtrackjs/dist/handtrack.min.js"></script>
+    <script type="module" src="./dist/index.js"></script>
 
-        const carSwitcher = new CarSwitcher('carImage');
-
-        document.getElementById('right-bottom')?.addEventListener('click', () => carSwitcher.nextCar());
-        document.getElementById('left-bottom')?.addEventListener('click', () => carSwitcher.previousCar());
-    </script>
-
-    <video id="videoElement" autoplay playsinline></video>
-    <button id="captureButton">Capture Image</button>
-    <button id="grayscaleBtn">Grayscale</button>
-    <canvas id="canvasElement" style="display:none;"></canvas>
-    <img id="capturedImage" alt="Captured Image" />
-    <img id="filteredImage" alt="Filtered Image" />
-    <script src="dist/index.js"></script>
 </body>
 </html>

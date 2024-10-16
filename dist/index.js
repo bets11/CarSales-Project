@@ -1,67 +1,130 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+// Variablen für Handtracking und Timer
+const handTrack = __importStar(require("handtrackjs"));
+let model = null;
+let video = document.getElementById("video");
+let canvas = document.getElementById("canvas");
+let context = canvas.getContext("2d");
+let isVideo = false;
+const updateNote = document.getElementById("updatenote");
+const videoConstraints = {
+    video: {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        facingMode: "user"
+    }
+};
+let timer = null;
+let timeoutDuration = 3000; // 3 Sekunden
+let isZooming = false; // Um festzustellen, ob die Zoom-Aktion bereits ausgeführt wird
+// Funktion für Zoom-In Aktion
+const zoomIn = () => {
+    if (!isZooming) {
+        isZooming = true;
+        console.log("Zooming in...");
+        // Hier den Zoom-In-Code ausführen, z.B. die Größe des Autos erhöhen
+        const carImage = document.getElementById("carImage");
+        let currentScale = parseFloat(carImage.style.transform.replace('scale(', '').replace(')', '')) || 1;
+        currentScale += 0.1; // Vergrößere den Skalierungsfaktor um 10%
+        carImage.style.transform = `scale(${currentScale})`;
+        setTimeout(() => {
+            isZooming = false; // Verhindern, dass die Aktion sofort wieder ausgelöst wird
+        }, 1000); // Warte 1 Sekunde, bevor eine erneute Zoom-Aktion möglich ist
+    }
+};
+// HandTrack.js Model laden
+handTrack.load().then((lmodel) => {
+    model = lmodel;
+    updateNote.innerText = "Model Loaded!";
+});
+// Handtracking und Gestenerkennung
+const runDetection = () => {
+    model.detect(video).then((predictions) => {
+        context === null || context === void 0 ? void 0 : context.clearRect(0, 0, canvas.width, canvas.height);
+        // Spiegeln des Canvas
+        context === null || context === void 0 ? void 0 : context.save();
+        context === null || context === void 0 ? void 0 : context.scale(-1, 1);
+        context === null || context === void 0 ? void 0 : context.translate(-canvas.width, 0);
+        model.renderPredictions(predictions, canvas, context, video);
+        context === null || context === void 0 ? void 0 : context.restore();
+        // Überprüfen, ob sich die Hand in der oberen rechten Ecke befindet
+        predictions.forEach((prediction) => {
+            const [x, y, width, height] = prediction.bbox;
+            // Überprüfen, ob die Hand in der oberen rechten Ecke ist
+            if (x + width > canvas.width * 0.75 && y < canvas.height * 0.25) {
+                if (!timer) {
+                    timer = setTimeout(() => {
+                        zoomIn(); // Zoom-In Aktion nach 3 Sekunden ausführen
+                        clearTimeout(timer);
+                        timer = null;
+                    }, timeoutDuration);
+                }
+            }
+            else {
+                // Timer zurücksetzen, wenn die Hand die Ecke verlässt
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+            }
+        });
+        if (isVideo) {
+            requestAnimationFrame(runDetection);
+        }
     });
 };
-const videoElement = document.getElementById('videoElement');
-const captureButton = document.getElementById('captureButton');
-const canvasElement = document.getElementById('canvasElement');
-const capturedImage = document.getElementById('capturedImage');
-const grayscaleButton = document.getElementById('grayscaleBtn');
-const filteredImage = document.getElementById('filteredImage');
-let stream = null;
-let context = null;
-function getVideoStream() {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!videoElement)
-            return;
-        try {
-            const constraints = { video: true, audio: false };
-            const stream = yield navigator.mediaDevices.getUserMedia(constraints);
-            videoElement.srcObject = stream;
+// Video-Stream starten
+const startVideo = () => {
+    handTrack.startVideo(video).then((status) => {
+        if (status) {
+            updateNote.innerText = "Video started. Now tracking...";
+            isVideo = true;
+            runDetection();
         }
-        catch (error) {
-            console.error('Error accessing media devices:', error);
+        else {
+            updateNote.innerText = "Please enable video access in your browser.";
         }
+    }).catch((error) => {
+        console.error("Error accessing camera: ", error);
+        updateNote.innerText = "Error accessing camera. Please check permissions.";
     });
-}
-function captureImage() {
-    if (!videoElement) {
-        console.error('Video element not found');
-        return;
+};
+// Video-Stream stoppen
+const stopVideo = () => {
+    handTrack.stopVideo(video);
+    isVideo = false;
+    updateNote.innerText = "Video stopped.";
+};
+// Event für Video Start/Stop
+document.getElementById("toggleButton").addEventListener("click", () => {
+    if (!isVideo) {
+        startVideo();
     }
-    context = canvasElement.getContext('2d');
-    if (context) {
-        canvasElement.width = videoElement.videoWidth;
-        canvasElement.height = videoElement.videoHeight;
-        context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-        const dataUrl = canvasElement.toDataURL('image/png');
-        capturedImage.src = dataUrl;
+    else {
+        stopVideo();
     }
-}
-grayscaleButton.addEventListener('click', () => {
-    if (!context) {
-        console.error('No image to filter');
-        return;
-    }
-    const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        data[i] = avg;
-        data[i + 1] = avg;
-        data[i + 2] = avg;
-    }
-    context.putImageData(imageData, 0, 0);
-    const dataUrl = canvasElement.toDataURL('image/png');
-    filteredImage.src = dataUrl;
 });
-window.addEventListener('DOMContentLoaded', () => {
-    getVideoStream().catch(err => console.error(err));
-});
-captureButton.addEventListener('click', captureImage);
